@@ -1,0 +1,14 @@
+.graphContainer {
+    border: dashed 3px #000;
+    border-radius: 5px;
+    margin: 5%;
+    width: 90%;
+    height: 300px;
+}
+.tbContainer {
+    border: dashed 3px #000;
+    border-radius: 5px;
+    width: 200px;
+    height: 300px;
+    margin: 1px;
+}
