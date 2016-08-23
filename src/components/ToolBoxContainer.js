@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
 import joint from 'jointjs';
 import $ from 'jquery';
 
@@ -10,7 +9,7 @@ class ToolBoxContainer extends React.Component {
     }
 
     componentDidUpdate() {
-        let root = ReactDOM.findDOMNode(this);
+        let root = this.refs.tbContainer;
 
         let toolGraph = new joint.dia.Graph,
             toolPaper = new joint.dia.Paper({
@@ -68,9 +67,9 @@ class ToolBoxContainer extends React.Component {
                 });
             });
             $(root).on('mouseup.fly', function (e) {
-                let x = e.pageX,
-                    y = e.pageY,
-                    target = paper.$el.offset();
+                const x = e.pageX;
+                const y = e.pageY;
+                const target = paper.$el.offset();
 
                 if (x > target.left && x < target.left + paper.$el.width() && y > target.top && y < target.top + paper.$el.height()) {
                     let s = flyShape.clone();
@@ -86,7 +85,7 @@ class ToolBoxContainer extends React.Component {
 
     render() {
         return (
-            <div className="tbContainer">
+            <div className="tbContainer" ref="tbContainer">
             </div>
         );
     }
