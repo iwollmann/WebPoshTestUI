@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import joint from 'jointjs';
 import $ from 'jquery';
+import commands from './JointCommands';
 
 
 class ToolBoxContainer extends React.Component {
@@ -23,57 +24,10 @@ class ToolBoxContainer extends React.Component {
         const rect = new joint.shapes.devs.Model({
             position: { x: 10, y: 30 },
             size: { width: 100, height: 30 },
-            inPorts: ['In'],
-            outPorts: ['Out'],
             attrs: {
                 rect: { fill: 'blue' },
-                '.label': { text: 'OnClick', 'ref-x': .4, 'ref-y': .2 },
-                '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
-                '.outPorts circle': { fill: '#E74C3C', type: 'output' }
+                '.label': { text: 'GoTo', 'ref-x': .4, 'ref-y': .2 }
             }
-        });
-
-        joint.shapes.commands = {};
-        joint.shapes.commands.GoTo = joint.shapes.devs.Model.extend({
-            defaults: joint.util.deepSupplement({
-                type: 'commands.GoTo',
-                href:''                
-            }, joint.shapes.devs.Model.prototype.defaults)
-        });
-
-        joint.shapes.commands.GoToView = joint.shapes.devs.ModelView.extend({
-            initialize: function () {
-                joint.dia.ElementView.prototype.initialize.apply(this, arguments);
-                this.$box = $('<div class="html-element"><button class="delete">x</button><span>Href:</span><input type="text" value="I m HTML input" /></div>');
-
-                this.$box.find('input').on('change', this.updateModel.bind(this));
-
-                this.$box.find('select').val(this.model.get('select'));
-                this.$box.find('.delete').on('click', this.model.remove.bind(this.model));
-                this.model.on('change', this.updateBox, this);
-                this.model.on('remove', this.removeBox, this);
-
-                this.updateBox();
-            },
-            render: function () {
-                joint.dia.ElementView.prototype.render.apply(this, arguments);
-                this.paper.$el.prepend(this.$box);
-                this.updateBox();
-                return this;
-            },
-            updateBox: function () {
-                const bbox = this.model.getBBox();
-debugger;
-const bbox2 = this.model.graph.getBBox();
-                this.$box.css({ width: 150, height: 40, left: bbox.x+bbox2.x, top: bbox.y+bbox2.y });
-            },
-            removeBox: function () {
-                this.$box.remove();
-            },
-            updateModel:function(evt){
-                this.model.set('href',$(evt.target).val());
-            }
-
         });
 
         toolGraph.addCells([rect]);
@@ -115,20 +69,7 @@ const bbox2 = this.model.graph.getBBox();
                 const target = paper.$el.offset();
 
                 if (x > target.left && x < target.left + paper.$el.width() && y > target.top && y < target.top + paper.$el.height()) {
-                    // let s = flyShape.clone();
-                    let s = new joint.shapes.commands.GoTo({
-                        size: { width: 100, height: 30 },
-                        inPorts: ['In'],
-                        outPorts: ['Out'],
-                        attrs: {
-                            rect: { fill: 'blue' },
-                            '.label': { text: 'OnClick', 'ref-x': .4, 'ref-y': .2 },
-                            '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
-                            '.outPorts circle': { fill: '#E74C3C', type: 'output' }
-                        },
-                        interactive: true
-                    });
-                    debugger;
+                    let s = new commands().getCommand(flyShape.attributes.attrs[".label"].text);
                     s.position(x - target.left - offset.x, y - target.top - offset.y);
                     graph.addCell(s);
                 }
