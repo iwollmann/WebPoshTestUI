@@ -82,7 +82,7 @@ class ToolBoxContainer extends React.Component {
 
     render() {
         return (
-            <div className="tbContainer" ref="tbContainer">
+            <div className="tbContainer four wide column" ref="tbContainer">
             </div>
         );
     }

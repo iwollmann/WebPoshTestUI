@@ -14,7 +14,7 @@
 }
 .html-element {
    position: absolute;
-   background: #3498DB;
+   background: white;
    /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
    pointer-events: none;
    -webkit-user-select: none;

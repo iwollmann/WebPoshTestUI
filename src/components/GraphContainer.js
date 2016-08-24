@@ -54,9 +54,7 @@ class GraphContainer extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className="graphContainer" ref="graphContainer">
-                </div>
+            <div className="graphContainer" ref="graphContainer">
             </div>
         );
     }

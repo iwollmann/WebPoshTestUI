@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import joint from 'jointjs';
 import ToolBoxContainer from './ToolBoxContainer';
 import GraphContainer from './GraphContainer';
+import CommandOutput from './CommandOutput';
 
 class GraphManager extends React.Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class GraphManager extends React.Component {
         this.handleGraphContainer = this.handleGraphContainer.bind(this);
     }
 
-    handleGraphContainer(graph, paper){
+    handleGraphContainer(graph, paper) {
         this.setState({ graph: graph, paper: paper });
     }
 
@@ -20,7 +21,10 @@ class GraphManager extends React.Component {
         return (
             <div>
                 <GraphContainer handleGraphContainerUpdate={this.handleGraphContainer} />
-                <ToolBoxContainer graph={this.state.graph} paper={this.state.paper}/>
+                <div className="ui grid container">
+                    <ToolBoxContainer graph={this.state.graph} paper={this.state.paper}/>
+                    <CommandOutput />
+                </div>
             </div>
         );
     }
