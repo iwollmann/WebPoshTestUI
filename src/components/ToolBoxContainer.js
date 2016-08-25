@@ -7,8 +7,6 @@ import PubSub from 'pubsub-js';
 class ToolBoxContainer extends React.Component {
     constructor(props) {
         super(props);
-
-        this.addCommand = this.addCommand.bind(this);
     }
 
     componentDidUpdate() {
@@ -75,22 +73,13 @@ class ToolBoxContainer extends React.Component {
                     let s = new commands().getCommand(flyShape.attributes.attrs[".label"].text);
                     s.position(x - target.left - offset.x, y - target.top - offset.y);
                     graph.addCell(s);
-
-                    addCommand(s);
                 }
+
                 $(root).off('mousemove.fly').off('mouseup.fly');
                 flyShape.remove();
                 $('#flyPaper').remove();
             });
         });
-    }
-
-    addCommand(commandElement) {
-        const command = {
-            id: commandElement.attributes.attrs.id,
-            properties: commandElement.attributes.attrs
-        };
-        // PubSub.publish('addCommand', 'testing');
     }
 
     render() {
@@ -103,8 +92,7 @@ class ToolBoxContainer extends React.Component {
 
 ToolBoxContainer.propTypes = {
     graph: PropTypes.object,
-    paper: PropTypes.object,
-    addCommand: PropTypes.func
+    paper: PropTypes.object
 };
 
 export default ToolBoxContainer;
