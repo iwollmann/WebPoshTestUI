@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import joint from 'jointjs';
 import $ from 'jquery';
+import PubSub from 'pubsub-js';
 
 class GraphContainer extends React.Component {
     constructor(props) {
@@ -44,6 +45,14 @@ class GraphContainer extends React.Component {
         });
 
         graph.addCell(start);
+
+        graph.on('batch:stop', function(obj){
+            if (obj.batchName == 'add-link') {
+                PubSub.publish('addCommand', 'testing');
+            }else if (obj.batchName == 'remove') {
+                PubSub.publish('removeCommand', 'testing');
+            }
+        });
 
         this.handleContainerUpdate(graph, paper);
     }

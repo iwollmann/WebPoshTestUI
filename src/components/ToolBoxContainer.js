@@ -2,11 +2,13 @@ import React, {Component, PropTypes} from 'react';
 import joint from 'jointjs';
 import $ from 'jquery';
 import commands from './JointCommands';
-
+import PubSub from 'pubsub-js';
 
 class ToolBoxContainer extends React.Component {
     constructor(props) {
         super(props);
+
+        this.addCommand = this.addCommand.bind(this);
     }
 
     componentDidUpdate() {
@@ -33,7 +35,8 @@ class ToolBoxContainer extends React.Component {
         toolGraph.addCells([rect]);
 
         let paper = this.props.paper,
-            graph = this.props.graph;
+            graph = this.props.graph,
+            addCommand = this.addCommand;
 
 
         toolPaper.on('cell:pointerdown', function (cellView, e, x, y) {
@@ -72,12 +75,22 @@ class ToolBoxContainer extends React.Component {
                     let s = new commands().getCommand(flyShape.attributes.attrs[".label"].text);
                     s.position(x - target.left - offset.x, y - target.top - offset.y);
                     graph.addCell(s);
+
+                    addCommand(s);
                 }
                 $(root).off('mousemove.fly').off('mouseup.fly');
                 flyShape.remove();
                 $('#flyPaper').remove();
             });
         });
+    }
+
+    addCommand(commandElement) {
+        const command = {
+            id: commandElement.attributes.attrs.id,
+            properties: commandElement.attributes.attrs
+        };
+        // PubSub.publish('addCommand', 'testing');
     }
 
     render() {
@@ -90,7 +103,8 @@ class ToolBoxContainer extends React.Component {
 
 ToolBoxContainer.propTypes = {
     graph: PropTypes.object,
-    paper: PropTypes.object
+    paper: PropTypes.object,
+    addCommand: PropTypes.func
 };
 
 export default ToolBoxContainer;
