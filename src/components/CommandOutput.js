@@ -43,7 +43,7 @@ class CommandOutput extends Component {
         return (
             <div className="sixteen wide column">Output:
                 <div className="ui container inverted segment" id="cdOutput">
-                    {this.state.commands.map(renderCommands, this) }
+                    {this.state.commands.map(renderCommands, this)}
                 </div>
             </div>
         );

@@ -46,11 +46,18 @@ class GraphContainer extends React.Component {
 
         graph.addCell(start);
 
-        graph.on('batch:stop', function(obj){
-            if (obj.batchName == 'add-link') {
-                PubSub.publish('addCommand', 'testing');
-            }else if (obj.batchName == 'remove') {
-                PubSub.publish('removeCommand', 'testing');
+        graph.on('change:source change:target', function (link, target, y) {
+            const source = link.get('source');
+            if (source.id && target.id) {
+                const targetElement = link.graph.getCell(target);
+                PubSub.publish('addCommand', targetElement.toString());
+            }
+        });
+        
+        graph.on('remove', function(cell, collection, opt){
+            if (cell.isLink()) {
+                const targetElement = collection.get(cell.get('target'));
+                PubSub.publish('removeCommand', targetElement.toString());
             }
         });
 

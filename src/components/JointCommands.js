@@ -38,7 +38,10 @@ class JointCommands {
             defaults: joint.util.deepSupplement({
                 type: 'commands.GoTo',
                 href: ''
-            }, joint.shapes.devs.Model.prototype.defaults)
+            }, joint.shapes.devs.Model.prototype.defaults),
+            toString:function(){
+                return 'Set-WebDriverSessionUrl -Url "' + this.attributes.href + '"';
+            }
         });
 
         //GOTO VIEW
