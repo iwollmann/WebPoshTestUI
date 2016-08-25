@@ -22,6 +22,13 @@ class GraphContainer extends React.Component {
                     attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
                 }),
                 validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+                    const id = cellViewS.model.id;
+                    const links = cellViewS.model.graph.getLinks().filter((x)=> {
+                        return x.get('source').id == id;
+                    });
+
+                    if (links.length > 1) return false;
+
                     if (magnetS && magnetS.getAttribute('type') === 'input') return false;
                     if (cellViewS === cellViewT) return false;
 
@@ -53,7 +60,7 @@ class GraphContainer extends React.Component {
                 PubSub.publish('addCommand', targetElement.toString());
             }
         });
-        
+
         graph.on('remove', function(cell, collection, opt){
             if (cell.isLink()) {
                 const targetElement = collection.get(cell.get('target'));
