@@ -1,32 +1,41 @@
 import joint from 'jointjs';
+import _ from 'lodash';
+import $ from 'jquery';
 
 class GraphCommandsBuilder {
-    contructor(commands) {
+    constructor(commands) {
+        this._commands = commands;
         if (typeof joint.shapes.commands === 'undefined') {
-            this.loadElements(commands);
+            this.loadElements();
         }
     }
 
-    loadElements(commands) {
-        for (let index = 0; index < commands.length; index++) {
-            this.buildDefinition(commands[index]);
-        }
+    loadElements() {
+        joint.shapes.commands = {};
+
+        // for (let index = 0; index < this._commands.length; index++) {
+        this.buildDefinition(this._commands[0]);
+        this.buildView(this._commands[0]);
+        // }
     }
 
     buildDefinition(command) {
-        joint.shapes.commands.GoTo = joint.shapes.devs.Model.extend({
-            defaults: joint.util.deepSupplement({
-                type: 'commands.GoTo',
-                href: ''
-            }, joint.shapes.devs.Model.prototype.defaults),
+        let propertyDefaults = { type: 'commands.' + command.name };
+
+        for (let i = 0; i < command.parameters.length; i++) {
+            propertyDefaults[command.parameters[i].name] = "";
+        }
+
+        joint.shapes.commands[command.name] = joint.shapes.devs.Model.extend({
+            defaults: joint.util.deepSupplement(propertyDefaults, joint.shapes.devs.Model.prototype.defaults),
             toString: function () {
-                return 'Set-WebDriverSessionUrl -Url "' + this.attributes.href + '"';
+                return command.command + _.map(command.parameters, function(value) { return ' -' + value.name + ' "' + this.attributes[value.name] + '"'; }.bind(this)).join(' ');
             }
         });
     }
 
     buildView(command) {
-        joint.shapes.commands.GoToView = joint.shapes.devs.ModelView.extend({
+        joint.shapes.commands.gotoView = joint.shapes.devs.ModelView.extend({
             initialize: function () {
                 joint.dia.ElementView.prototype.initialize.apply(this, arguments);
                 this.$box = $('<div class="html-element"><button class="delete">x</button><div class="ui left action input"><span class="ui mini leabeled">Href:</span><input class="ui mini input" type="text" value="I m HTML input" /></div></div>');
@@ -55,7 +64,7 @@ class GraphCommandsBuilder {
                 this.$box.remove();
             },
             updateModel: function (evt) {
-                this.model.set('href', $(evt.target).val());
+                this.model.set('url', $(evt.target).val());
             }
 
         });

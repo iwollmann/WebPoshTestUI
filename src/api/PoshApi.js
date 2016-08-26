@@ -19,7 +19,7 @@ const commands = [{
         ],
         command: "Set-WebDriverSessionSendKeys"
     }
-]
+];
 
 class PoshApi {
     static GetAllCommands() {

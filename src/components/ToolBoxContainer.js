@@ -6,6 +6,7 @@ import PubSub from 'pubsub-js';
 import ToolBoxCommandsBuilder from './ToolBoxCommandsBuilder';
 import * as commandActions from '../actions/commandActions';
 import _ from 'lodash';
+import GraphCommandsBuilder from './GraphCommandsBuilder';
 
 class ToolBoxContainer extends React.Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class ToolBoxContainer extends React.Component {
             });
 
         commandActions.LoadCommands().then((commands) => {
+            let testing = new GraphCommandsBuilder(commands);
             const commandsTool = ToolBoxCommandsBuilder.BuildCommands(_.map(commands, 'name'));
             toolGraph.addCells(commandsTool);
         });
