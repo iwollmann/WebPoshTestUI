@@ -1,50 +1,31 @@
 import joint from 'jointjs';
-import $ from 'jquery';
 
-class JointCommands {
-    constructor() {
+class GraphCommandsBuilder {
+    contructor(commands) {
         if (typeof joint.shapes.commands === 'undefined') {
-             this.loadCommands();
+            this.loadElements(commands);
         }
     }
 
-    getCommand(name) {
-        switch (name.toLowerCase()) {
-            case 'goto':
-                return this.gotoCommand();
-            default:
-                break;
+    loadElements(commands) {
+        for (let index = 0; index < commands.length; index++) {
+            this.buildDefinition(commands[index]);
         }
     }
 
-    gotoCommand() {
-        return new joint.shapes.commands.GoTo({
-            size: { width: 140, height: 30 },
-            inPorts: ['In'],
-            outPorts: ['Out'],
-            attrs: {
-                rect: { fill: 'blue' },
-                '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
-                '.outPorts circle': { fill: '#E74C3C', type: 'output' }
-            }
-        });
-    }
-
-    loadCommands() {
-        joint.shapes.commands = {};
-
-        //GOTO
+    buildDefinition(command) {
         joint.shapes.commands.GoTo = joint.shapes.devs.Model.extend({
             defaults: joint.util.deepSupplement({
                 type: 'commands.GoTo',
                 href: ''
             }, joint.shapes.devs.Model.prototype.defaults),
-            toString:function(){
+            toString: function () {
                 return 'Set-WebDriverSessionUrl -Url "' + this.attributes.href + '"';
             }
         });
+    }
 
-        //GOTO VIEW
+    buildView(command) {
         joint.shapes.commands.GoToView = joint.shapes.devs.ModelView.extend({
             initialize: function () {
                 joint.dia.ElementView.prototype.initialize.apply(this, arguments);
@@ -81,4 +62,4 @@ class JointCommands {
     }
 }
 
-export default JointCommands;
+export default GraphCommandsBuilder;

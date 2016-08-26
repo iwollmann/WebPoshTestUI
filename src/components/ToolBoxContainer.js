@@ -3,6 +3,9 @@ import joint from 'jointjs';
 import $ from 'jquery';
 import commands from './JointCommands';
 import PubSub from 'pubsub-js';
+import ToolBoxCommandsBuilder from './ToolBoxCommandsBuilder';
+import * as commandActions from '../actions/commandActions';
+import _ from 'lodash';
 
 class ToolBoxContainer extends React.Component {
     constructor(props) {
@@ -21,16 +24,10 @@ class ToolBoxContainer extends React.Component {
                 interactive: false
             });
 
-        const rect = new joint.shapes.devs.Model({
-            position: { x: 10, y: 30 },
-            size: { width: 100, height: 30 },
-            attrs: {
-                rect: { fill: 'blue' },
-                '.label': { text: 'GoTo', 'ref-x': .4, 'ref-y': .2 }
-            }
+        commandActions.LoadCommands().then((commands) => {
+            const commandsTool = ToolBoxCommandsBuilder.BuildCommands(_.map(commands, 'name'));
+            toolGraph.addCells(commandsTool);
         });
-
-        toolGraph.addCells([rect]);
 
         let paper = this.props.paper,
             graph = this.props.graph,
