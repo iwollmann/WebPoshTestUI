@@ -26,23 +26,33 @@ class GraphCommandsBuilder {
             propertyDefaults[command.parameters[i].name] = "";
         }
 
+        let toString = function (value) {
+            return ' -' + value.name + ' "' + this.attributes[value.name] + '"';
+        };
+
         joint.shapes.commands[command.name] = joint.shapes.devs.Model.extend({
             defaults: joint.util.deepSupplement(propertyDefaults, joint.shapes.devs.Model.prototype.defaults),
             toString: function () {
-                return command.command + _.map(command.parameters, function(value) { return ' -' + value.name + ' "' + this.attributes[value.name] + '"'; }.bind(this)).join(' ');
+                return command.command + _.map(command.parameters, toString.bind(this)).join(' ');
             }
         });
     }
 
     buildView(command) {
-        joint.shapes.commands.gotoView = joint.shapes.devs.ModelView.extend({
+        const template = '<div class="html-element">'+
+        '<button class="delete">x</button>'+
+        '<div class="ui left action input">'+
+            '<span class="ui mini leabeled">Href:</span>'+
+            '<input class="ui mini input" type="text" value="" />'+
+        '</div></div>';
+
+        joint.shapes.commands[command.name + 'View'] = joint.shapes.devs.ModelView.extend({
             initialize: function () {
                 joint.dia.ElementView.prototype.initialize.apply(this, arguments);
-                this.$box = $('<div class="html-element"><button class="delete">x</button><div class="ui left action input"><span class="ui mini leabeled">Href:</span><input class="ui mini input" type="text" value="I m HTML input" /></div></div>');
+                this.$box = $(template);
 
                 this.$box.find('input').on('change', this.updateModel.bind(this));
 
-                this.$box.find('select').val(this.model.get('select'));
                 this.$box.find('.delete').on('click', this.model.remove.bind(this.model));
                 this.model.on('change', this.updateBox, this);
                 this.model.on('remove', this.removeBox, this);
