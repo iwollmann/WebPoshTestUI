@@ -13,10 +13,10 @@ class GraphCommandsBuilder {
     loadElements() {
         joint.shapes.commands = {};
 
-        // for (let index = 0; index < this._commands.length; index++) {
-        this.buildDefinition(this._commands[0]);
-        this.buildView(this._commands[0]);
-        // }
+        for (let index = 0; index < this._commands.length; index++) {
+            this.buildDefinition(this._commands[index]);
+            this.buildView(this._commands[index]);
+        }
     }
 
     buildDefinition(command) {
@@ -26,7 +26,7 @@ class GraphCommandsBuilder {
             propertyDefaults[command.parameters[i].name] = "";
         }
 
-        let toString = function (value) {
+        const toString = function (value) {
             return ' -' + value.name + ' "' + this.attributes[value.name] + '"';
         };
 
@@ -39,12 +39,17 @@ class GraphCommandsBuilder {
     }
 
     buildView(command) {
-        const template = '<div class="html-element">'+
-        '<button class="delete">x</button>'+
-        '<div class="ui left action input">'+
-            '<span class="ui mini leabeled">Href:</span>'+
-            '<input class="ui mini input" type="text" value="" />'+
-        '</div></div>';
+        let template = '<div class="html-element">' +
+            '<button class="delete">x</button>' +
+            '<div class="ui form" id="parametersList">';
+
+        for (let index = 0; index < command.parameters.length; index++) {
+            const parameter = command.parameters[index];
+            template += '<div class="field"><span class="ui mini leabeled">' + parameter.name + ':</span>' +
+                '<input class="ui mini input" type="text" value="" /></div>';
+        }
+
+        template += '</div></div>';
 
         joint.shapes.commands[command.name + 'View'] = joint.shapes.devs.ModelView.extend({
             initialize: function () {
@@ -74,7 +79,7 @@ class GraphCommandsBuilder {
                 this.$box.remove();
             },
             updateModel: function (evt) {
-                this.model.set('url', $(evt.target).val());
+                _.map(command.parameters, ((parameter) => { this.model.set(parameter.name, $(evt.target).val()); }).bind(this));
             }
 
         });
