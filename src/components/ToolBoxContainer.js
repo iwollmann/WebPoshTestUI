@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import joint from 'jointjs';
 import $ from 'jquery';
-import commands from './JointCommands';
 import PubSub from 'pubsub-js';
 import ToolBoxCommandsBuilder from './ToolBoxCommandsBuilder';
 import * as commandActions from '../actions/commandActions';
@@ -69,7 +68,7 @@ class ToolBoxContainer extends React.Component {
                 const target = paper.$el.offset();
 
                 if (x > target.left && x < target.left + paper.$el.width() && y > target.top && y < target.top + paper.$el.height()) {
-                    let s = new commands().getCommand(flyShape.attributes.attrs[".label"].text);
+                    let s = ToolBoxCommandsBuilder.getCommand(flyShape.attributes.attrs[".label"].text);
                     s.position(x - target.left - offset.x, y - target.top - offset.y);
                     graph.addCell(s);
                 }
